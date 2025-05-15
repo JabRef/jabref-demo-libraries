@@ -1,0 +1,24 @@
+name: Check
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '2 3 * * 3'
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }}-${{ github.head_ref || github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  consistency-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run jabref-action
+        uses: jabref/jabref-action@main
+        with:
+          bibfile: chocolate/Chocolate.bib
